@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow } from 'electron';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import { exec } from 'child_process';
 
 process.env.DIST_ELECTRON = join(__dirname, '../');
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist-electron/renderer');
@@ -58,6 +59,30 @@ app.whenReady().then(() => {
   });
 
   createWindow();
+
+  const toolsPath = resolve(__dirname, '../../tools');
+  console.log(toolsPath);
+  const workerProcess = exec(
+    `caj2pdf.exe convert D:/test.caj -o D:/ouput.pdf`,
+    {
+      cwd: toolsPath,
+    }
+  );
+
+  // 打印正常的后台可执行程序输出
+  workerProcess.stdout?.on('data', function (data) {
+    console.log('stdout: ' + data.toString());
+  });
+
+  // 打印错误的后台可执行程序输出
+  workerProcess.stderr?.on('data', function (data) {
+    console.log('stderr: ' + data.toString());
+  });
+
+  // 退出之后的输出
+  workerProcess.on('close', function (code) {
+    console.log('out code：' + code);
+  });
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
