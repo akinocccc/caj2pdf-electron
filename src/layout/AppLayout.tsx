@@ -21,7 +21,7 @@ function AppLayout(): JSX.Element {
       <Sider collapsible theme="light">
         <SideMenu />
       </Sider>
-      <Content style={{ overflow: 'auto', maxHeight: '100vh', padding: 20 }}>
+      <Content style={{ overflow: 'auto', maxHeight: '100vh' }}>
         <Suspense
           fallback={
             <CenterDiv>

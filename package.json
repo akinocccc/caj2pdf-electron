@@ -1,6 +1,6 @@
 {
-  "name": "electron-react-starter",
-  "productName": "Electon-React Starter",
+  "name": "caj2pdf-electron",
+  "productName": "CAJ2PDF",
   "version": "0.0.1",
   "description": "A react template of electron project.",
   "main": "dist-electron/main/index.js",

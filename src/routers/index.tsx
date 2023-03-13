@@ -4,7 +4,11 @@ import {
   Navigate,
   ShouldRevalidateFunction,
 } from 'react-router-dom';
-import { ReadOutlined } from '@ant-design/icons';
+import {
+  FileDoneOutlined,
+  FileSyncOutlined,
+  InfoCircleOutlined,
+} from '@ant-design/icons';
 import { lazy } from 'react';
 interface RouteObject {
   path?: string;
@@ -24,22 +28,40 @@ interface RouteObject {
   };
 }
 
-const README = lazy(() => import('@renderer/pages/README'));
+const About = lazy(() => import('@renderer/pages/About'));
+const Transformer = lazy(() => import('@renderer/pages/Transformer'));
 
 const routes: RouteObject[] = [
   {
     index: true,
-    element: <Navigate replace to="/readme" />,
+    element: <Navigate replace to="/tranformer" />,
     meta: {
       hidden: true,
     },
   },
   {
-    path: '/readme',
-    element: <README />,
+    path: '/tranformer',
+    element: <Transformer />,
     meta: {
-      name: 'README',
-      icon: <ReadOutlined />,
+      name: '转换器',
+      icon: <FileSyncOutlined />,
+    },
+  },
+  {
+    path: '/doneList',
+    element: <Transformer />,
+    meta: {
+      name: '已完成',
+      // eslint-disable-next-line react/jsx-no-undef
+      icon: <FileDoneOutlined />,
+    },
+  },
+  {
+    path: '/about',
+    element: <About />,
+    meta: {
+      name: '关于我们',
+      icon: <InfoCircleOutlined />,
     },
   },
 ];
