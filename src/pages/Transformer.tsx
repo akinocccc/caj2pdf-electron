@@ -12,7 +12,7 @@ import { ipcRenderer } from 'electron';
 import { useState } from 'react';
 import styled from 'styled-components';
 
-export interface FileObject {
+interface FileObject {
   filename: string;
   path: string;
 }
@@ -53,7 +53,7 @@ const STATUS = [
   </>,
 ];
 
-function Transformer(): JSX.Element {
+const Transformer = (): JSX.Element => {
   const { message, modal } = App.useApp();
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -80,6 +80,7 @@ function Transformer(): JSX.Element {
           <Button
             size="small"
             icon={<RetweetOutlined />}
+            disabled={fileStatusMap[path].status === 1}
             onClick={() => transform([{ path, filename }])}
           ></Button>
 
@@ -91,7 +92,11 @@ function Transformer(): JSX.Element {
             okText="确定"
             cancelText="取消"
           >
-            <Button size="small" icon={<CloseOutlined />}></Button>
+            <Button
+              size="small"
+              disabled={fileStatusMap[path].status === 1}
+              icon={<CloseOutlined />}
+            ></Button>
           </Popconfirm>
         </Space>
       ),
@@ -168,7 +173,7 @@ function Transformer(): JSX.Element {
     setSelectedRowKeys(newSelectedRowKeys);
   };
   return (
-    <>
+    <div>
       <StyledRow justify="space-between">
         <Col>
           <Button size="middle" icon={<PlusOutlined />} onClick={selectFiles}>
@@ -241,8 +246,8 @@ function Transformer(): JSX.Element {
           }}
         />
       </StyledRow>
-    </>
+    </div>
   );
-}
+};
 
 export default Transformer;

@@ -1,6 +1,7 @@
-import child_process, { exec } from 'child_process';
+import { exec } from 'child_process';
 import { dialog, ipcMain } from 'electron';
 import path from 'path';
+import fs from 'fs';
 
 export default function ipc(): void {
   ipcMain.handle('transform:selectFile', () => {
@@ -53,6 +54,8 @@ export default function ipc(): void {
           }
           count++;
           if (count === files.length) {
+            fs.rmSync(`${toolsPath}/pdf_toc.pdf`);
+            fs.rmSync(`${toolsPath}/pdf.tmp`);
             resolve(results);
           }
         });

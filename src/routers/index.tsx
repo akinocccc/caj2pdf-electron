@@ -16,6 +16,7 @@ interface RouteObject {
   children?: RouteObject[];
   caseSensitive?: boolean;
   id?: string;
+  lazy?: any;
   loader?: LoaderFunction;
   action?: ActionFunction;
   element?: React.ReactNode | null;
@@ -28,42 +29,44 @@ interface RouteObject {
   };
 }
 
-const About = lazy(() => import('@renderer/pages/About'));
-const Transformer = lazy(() => import('@renderer/pages/Transformer'));
+// import Transformer from '@renderer/pages/Transformer';
+// const About = lazy(() => import('@renderer/pages/About'));
 
 const routes: RouteObject[] = [
-  {
-    index: true,
-    element: <Navigate replace to="/tranformer" />,
-    meta: {
-      hidden: true,
-    },
-  },
+  // {
+  //   index: true,
+  //   element: <Navigate replace to="/tranformer" />,
+  //   meta: {
+  //     hidden: true,
+  //   },
+  // },
   {
     path: '/tranformer',
-    element: <Transformer />,
+    async lazy() {
+      const Transformer = await import('@renderer/pages/Transformer');
+      return { Component: Transformer };
+    },
     meta: {
-      name: '转换器',
+      name: 'Transformer',
       icon: <FileSyncOutlined />,
     },
   },
-  {
-    path: '/doneList',
-    element: <Transformer />,
-    meta: {
-      name: '已完成',
-      // eslint-disable-next-line react/jsx-no-undef
-      icon: <FileDoneOutlined />,
-    },
-  },
-  {
-    path: '/about',
-    element: <About />,
-    meta: {
-      name: '关于我们',
-      icon: <InfoCircleOutlined />,
-    },
-  },
+  // {
+  //   path: '/about',
+  //   element: <About />,
+  //   meta: {
+  //     name: 'About',
+  //     icon: <InfoCircleOutlined />,
+  //   },
+  // },
+  // {
+  //   path: '/doneList',
+  //   element: <div>123</div>,
+  //   meta: {
+  //     name: '已完成',
+  //     icon: <FileDoneOutlined />,
+  //   },
+  // },
 ];
 
 export default routes;

@@ -1,8 +1,9 @@
 import { Card } from 'antd';
-import styled from 'styled-components';
+import { useState } from 'react';
 
-function Transformer(): JSX.Element {
+function About(): JSX.Element {
+  const [aaa, setAaa] = useState('');
   return <Card bordered={false}></Card>;
 }
 
-export default Transformer;
+export default About;

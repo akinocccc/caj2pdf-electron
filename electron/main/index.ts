@@ -41,8 +41,8 @@ function createWindow(): void {
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
+  mainWindow.webContents.openDevTools();
   if (is.dev && url) {
-    mainWindow.webContents.openDevTools();
     mainWindow.loadURL(url);
   } else {
     mainWindow.loadFile(indexHtml);

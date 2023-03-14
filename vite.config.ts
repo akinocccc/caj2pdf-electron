@@ -11,10 +11,12 @@ export default defineConfig(({ command }) => {
   return {
     build: {
       outDir: 'dist-electron/renderer',
+      sourcemap: true,
     },
     resolve: {
       alias: {
         '@renderer': resolve(__dirname, 'src'),
+        react: resolve('./node_modules/react'),
       },
     },
     plugins: [
@@ -23,7 +25,7 @@ export default defineConfig(({ command }) => {
       electron({
         include: ['electron'],
         transformOptions: {
-          sourcemap,
+          sourcemap: true,
         },
         plugins: [
           ...(process.env.VSCODE_DEBUG
