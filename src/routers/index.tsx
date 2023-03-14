@@ -1,5 +1,6 @@
 import {
   ActionFunction,
+  createHashRouter,
   LoaderFunction,
   Navigate,
   ShouldRevalidateFunction,
@@ -9,7 +10,6 @@ import {
   FileSyncOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
-import { lazy } from 'react';
 interface RouteObject {
   path?: string;
   index?: boolean;
@@ -29,22 +29,23 @@ interface RouteObject {
   };
 }
 
-// import Transformer from '@renderer/pages/Transformer';
+import Transformer from '@renderer/pages/Transformer';
 // const About = lazy(() => import('@renderer/pages/About'));
 
 const routes: RouteObject[] = [
-  // {
-  //   index: true,
-  //   element: <Navigate replace to="/tranformer" />,
-  //   meta: {
-  //     hidden: true,
-  //   },
-  // },
+  {
+    index: true,
+    element: <Navigate replace to="/tranformer" />,
+    meta: {
+      hidden: true,
+    },
+  },
   {
     path: '/tranformer',
+    element: <Transformer />,
     async lazy() {
       const Transformer = await import('@renderer/pages/Transformer');
-      return { Component: Transformer };
+      return { element: Transformer };
     },
     meta: {
       name: 'Transformer',
@@ -70,3 +71,5 @@ const routes: RouteObject[] = [
 ];
 
 export default routes;
+
+// export default createHashRouter(routes as any);
