@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import routes from '@renderer/routers';
+import routeTable from '@renderer/routers/setting';
 import { useEffect, useState } from 'react';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -14,7 +14,7 @@ function SideMenu(): JSX.Element {
 
   // Get menu items.
   const menuItems: MenuItem[] = [];
-  routes?.forEach((item) => {
+  routeTable?.forEach((item) => {
     if (!item?.meta?.hidden) {
       menuItems.push({
         label: item.meta?.name,

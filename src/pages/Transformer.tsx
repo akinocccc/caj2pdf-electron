@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import { App, Button, Col, Divider, Popconfirm, Row, Space, Table } from 'antd';
 import { ipcRenderer } from 'electron';
+import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 

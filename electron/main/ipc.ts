@@ -29,9 +29,11 @@ export default function ipc(): void {
   });
   ipcMain.handle('transform:start', (_, files: any[]) => {
     return new Promise<number[]>((resolve) => {
-      const toolsPath = path.resolve(__dirname, '../../tools');
+      const toolsPath = path.resolve(__dirname, '../../');
       const results: any[] = [];
       let count = 0;
+      console.log(files);
+      console.log(toolsPath);
       files.forEach((item) => {
         let hasError = false;
         const workerProcess = exec(
@@ -41,8 +43,13 @@ export default function ipc(): void {
           }
         );
 
+        workerProcess.stdout?.on('data', (data) => {
+          console.log(data);
+        });
+
         // 打印错误的后台可执行程序输出
-        workerProcess.stderr?.on('data', function (data) {
+        workerProcess.stderr?.on('data', (data) => {
+          console.log(data);
           hasError = true;
         });
 
@@ -53,9 +60,12 @@ export default function ipc(): void {
             results.push({ ...item, status: 2 });
           }
           count++;
+          console.log(hasError, count);
           if (count === files.length) {
-            fs.rmSync(`${toolsPath}/pdf_toc.pdf`);
-            fs.rmSync(`${toolsPath}/pdf.tmp`);
+            fs.existsSync(`${toolsPath}/pdf_toc.pdf`) &&
+              fs.rmSync(`${toolsPath}/pdf_toc.pdf`);
+            fs.existsSync(`${toolsPath}/pdf.tmp`) &&
+              fs.rmSync(`${toolsPath}/pdf.tmp`);
             resolve(results);
           }
         });

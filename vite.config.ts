@@ -6,17 +6,21 @@ import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 import renderer from 'vite-plugin-electron-renderer';
 
-export default defineConfig(({ command }) => {
-  const sourcemap = command === 'serve' || !!process.env.VSCODE_DEBUG;
+export default defineConfig(() => {
   return {
     build: {
       outDir: 'dist-electron/renderer',
+      target: 'esnext',
       sourcemap: true,
+      // rollupOptions: {
+      //   output: {
+      //     format: 'cjs',
+      //   },
+      // },
     },
     resolve: {
       alias: {
         '@renderer': resolve(__dirname, 'src'),
-        react: resolve('./node_modules/react'),
       },
     },
     plugins: [
@@ -44,7 +48,7 @@ export default defineConfig(({ command }) => {
       }),
       // Use Node.js API in the Renderer-process
       renderer({
-        nodeIntegration: true,
+        nodeIntegration: false,
       }),
     ],
   };

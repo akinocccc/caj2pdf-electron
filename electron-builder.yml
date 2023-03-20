@@ -4,6 +4,7 @@ directories:
   buildResources: build
 files:
   - dist-electron
+  - tools
   # - build
   # - '!**/.vscode/*'
   # - '!electron/*'
@@ -16,6 +17,7 @@ asarUnpack:
 afterSign: build/notarize.js
 win:
   executableName: electron-app
+  extraResources: tools
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -23,6 +25,7 @@ nsis:
   createDesktopShortcut: always
 mac:
   entitlementsInherit: build/entitlements.mac.plist
+  extraResources: tools
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.

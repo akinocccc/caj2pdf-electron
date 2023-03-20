@@ -1,8 +1,7 @@
-import { Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter as Router } from 'react-router-dom';
-import { App, ConfigProvider, message, Spin } from 'antd';
-import styled from 'styled-components';
+import { App, ConfigProvider, message } from 'antd';
 import Reset from './assets/styles/reset';
 import AppLayout from './layout/AppLayout';
 
@@ -10,29 +9,17 @@ message.config({
   top: 100,
 });
 
-const CenterDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-`;
+if (!window.a) window.a = [];
+a.push(React);
+console.log(window.a, window.a[0] === window.a[1]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <Router>
-    <ConfigProvider direction="ltr">
-      <App>
-        <Reset />
-        <Suspense
-          fallback={
-            <CenterDiv>
-              <Spin size="large" tip="Loading..." />
-            </CenterDiv>
-          }
-        >
-          <AppLayout />
-        </Suspense>
-      </App>
-    </ConfigProvider>
-  </Router>
+  <ConfigProvider direction="ltr">
+    <App>
+      <Reset />
+      <Router>
+        <AppLayout />
+      </Router>
+    </App>
+  </ConfigProvider>
 );
