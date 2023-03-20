@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import fs from 'fs';
-import { electronApp, is } from '@electron-toolkit/utils';
+import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import ipc from './ipc';
 
 process.env.DIST_ELECTRON = join(__dirname, '../');
@@ -15,22 +15,6 @@ const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 
 function createWindow(): void {
-  // const gotTheLock = app.requestSingleInstanceLock();
-  // if (!gotTheLock) {
-  //   app.quit();
-  // } else {
-  //   app.on('second-instance', () => {
-  //     const win = global.sharedObject.win;
-  //     if (win) {
-  //       if (win.isMinimized()) win.restore();
-  //       if (win.isVisible()) {
-  //         win.focus();
-  //       } else {
-  //         win.show();
-  //       }
-  //     }
-  //   });
-  // }
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -74,16 +58,15 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  console.log('load');
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron');
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
-  // app.on('browser-window-created', (_, window) => {
-  //   optimizer.watchWindowShortcuts(window);
-  // });
+  app.on('browser-window-created', (_, window) => {
+    optimizer.watchWindowShortcuts(window);
+  });
 
   if (!fs.existsSync('D:/CAJ2PDF')) {
     fs.mkdirSync('D:/CAJ2PDF');

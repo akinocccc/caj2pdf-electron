@@ -9,7 +9,6 @@ import {
 } from '@ant-design/icons';
 import { App, Button, Col, Divider, Popconfirm, Row, Space, Table } from 'antd';
 import { ipcRenderer } from 'electron';
-import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -42,7 +41,7 @@ const STATUS = [
   </>,
   <>
     <Space>
-      <SmileTwoTone twoToneColor="green" />
+      <SmileTwoTone twoToneColor="#52c41a" />
       已完成
     </Space>
   </>,
@@ -136,7 +135,6 @@ const Transformer = (): JSX.Element => {
     filePaths.forEach((item) => (fileStatusMap[item.path].status = 1));
     setFileStatusMap({ ...fileStatusMap });
     ipcRenderer.invoke('transform:start', filePaths).then((res) => {
-      console.log(res);
       const STATUS_TIPS = {
         2: ['success', '转换成功'],
         3: ['error', '转换失败'],
@@ -148,6 +146,9 @@ const Transformer = (): JSX.Element => {
         };
         const [type, tips] = STATUS_TIPS[item.status];
         message[type](`文件【${item.filename}】${tips}`);
+        if (item.status === 2) {
+          window.api.store.set('aa', 123);
+        }
       });
       setFileStatusMap({ ...fileStatusMap });
     });

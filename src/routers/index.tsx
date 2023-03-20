@@ -1,35 +1,46 @@
-import { Suspense } from 'react';
-import { RouteObject, useRoutes } from 'react-router-dom';
-import styled from 'styled-components';
-import routeTable from '@renderer/routers/setting';
-import { Spin } from 'antd';
+import { Navigate } from 'react-router-dom';
+import {
+  FileDoneOutlined,
+  FileSyncOutlined,
+  InfoCircleOutlined,
+} from '@ant-design/icons';
+import { lazy } from 'react';
 
-const CenterDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-`;
+const Transformer = lazy(() => import('@renderer/pages/Transformer'));
+const About = lazy(() => import('@renderer/pages/About'));
 
-const syncRouter = (table: Route.RouteObject[]): RouteObject[] => {
-  const routes: Route.RouteObject[] = table.map((route) => ({
-    index: route?.index,
-    path: route?.path,
-    element: route?.element || (
-      <Suspense
-        fallback={
-          <CenterDiv>
-            <Spin size="large" tip="Loading..." />
-          </CenterDiv>
-        }
-      >
-        <route.component />
-      </Suspense>
-    ),
-    children: route.children && syncRouter(route.children),
-  }));
-  return routes as RouteObject[];
-};
+const routes: Route.RouteObject[] = [
+  {
+    index: true,
+    element: <Navigate replace to="/tranformer" />,
+    meta: {
+      hidden: true,
+    },
+  },
+  {
+    path: '/tranformer',
+    element: <Transformer />,
+    meta: {
+      name: 'Transformer',
+      icon: <FileSyncOutlined />,
+    },
+  },
+  {
+    path: '/about',
+    element: <About />,
+    meta: {
+      name: 'About',
+      icon: <InfoCircleOutlined />,
+    },
+  },
+  {
+    path: '/doneList',
+    element: <div>123</div>,
+    meta: {
+      name: '已完成',
+      icon: <FileDoneOutlined />,
+    },
+  },
+];
 
-export default () => useRoutes(syncRouter(routeTable));
+export default routes;

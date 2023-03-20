@@ -16,3 +16,9 @@ declare namespace Route {
     };
   };
 }
+
+interface Window {
+  api: {
+    store: any;
+  };
+}

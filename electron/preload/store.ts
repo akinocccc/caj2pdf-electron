@@ -1,10 +1,5 @@
-import { ipcRenderer } from 'electron';
+import Store from 'electron-store';
 
-export default {
-  get(key: string) {
-    return ipcRenderer.sendSync('electron-store-get', key);
-  },
-  set(property: string, val) {
-    ipcRenderer.send('electron-store-set', property, val);
-  },
-};
+const store = new Store();
+
+export default store;

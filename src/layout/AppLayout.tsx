@@ -1,6 +1,7 @@
 import SideMenu from './components/SideMenu';
 import { Layout } from 'antd';
-import SyncRoutes from '@renderer/routers/index';
+import { RouteObject, useRoutes } from 'react-router-dom';
+import routes from '@renderer/routers/index';
 
 const { Content, Sider } = Layout;
 
@@ -11,7 +12,7 @@ function AppLayout(): JSX.Element {
         <SideMenu />
       </Sider>
       <Content style={{ overflow: 'auto', maxHeight: '100vh' }}>
-        <SyncRoutes />
+        {useRoutes(routes as RouteObject[])}
       </Content>
     </Layout>
   );
