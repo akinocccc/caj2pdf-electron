@@ -12,11 +12,6 @@ export default defineConfig(() => {
       outDir: 'dist-electron/renderer',
       target: 'esnext',
       sourcemap: true,
-      // rollupOptions: {
-      //   output: {
-      //     format: 'cjs',
-      //   },
-      // },
     },
     resolve: {
       alias: {

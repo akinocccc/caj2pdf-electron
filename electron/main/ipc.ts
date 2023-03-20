@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import { dialog, ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs';
+import { ROOT_PATH } from './constant';
 
 export default function ipc(): void {
   ipcMain.handle('transform:selectFile', () => {
@@ -29,11 +30,9 @@ export default function ipc(): void {
   });
   ipcMain.handle('transform:start', (_, files: any[]) => {
     return new Promise<number[]>((resolve) => {
-      const toolsPath = path.resolve(__dirname, '../../');
+      const toolsPath = path.resolve(__dirname, `${ROOT_PATH}/tools`);
       const results: any[] = [];
       let count = 0;
-      console.log(files);
-      console.log(toolsPath);
       files.forEach((item) => {
         let hasError = false;
         const workerProcess = exec(
@@ -43,13 +42,12 @@ export default function ipc(): void {
           }
         );
 
-        workerProcess.stdout?.on('data', (data) => {
-          console.log(data);
-        });
+        // workerProcess.stdout?.on('data', (data) => {
+        //   console.log(data);
+        // });
 
         // 打印错误的后台可执行程序输出
-        workerProcess.stderr?.on('data', (data) => {
-          console.log(data);
+        workerProcess.stderr?.on('data', () => {
           hasError = true;
         });
 
@@ -60,7 +58,6 @@ export default function ipc(): void {
             results.push({ ...item, status: 2 });
           }
           count++;
-          console.log(hasError, count);
           if (count === files.length) {
             fs.existsSync(`${toolsPath}/pdf_toc.pdf`) &&
               fs.rmSync(`${toolsPath}/pdf_toc.pdf`);

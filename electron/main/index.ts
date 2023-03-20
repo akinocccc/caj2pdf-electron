@@ -1,7 +1,7 @@
-import { app, shell, BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
 import fs from 'fs';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import { electronApp, is } from '@electron-toolkit/utils';
 import ipc from './ipc';
 
 process.env.DIST_ELECTRON = join(__dirname, '../');
@@ -62,9 +62,8 @@ function createWindow(): void {
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  mainWindow.webContents.openDevTools();
-  // mainWindow.loadURL('http://localhost:5173/');
   if (is.dev && url) {
+    mainWindow.webContents.openDevTools();
     mainWindow.loadURL(url);
   } else {
     mainWindow.loadFile(indexHtml);
