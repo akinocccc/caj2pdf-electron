@@ -7,6 +7,7 @@ import {
 import { lazy } from 'react';
 
 const Transformer = lazy(() => import('@renderer/pages/Transformer'));
+const DoneList = lazy(() => import('@renderer/pages/DoneList'));
 const About = lazy(() => import('@renderer/pages/About'));
 
 const routes: Route.RouteObject[] = [
@@ -26,19 +27,19 @@ const routes: Route.RouteObject[] = [
     },
   },
   {
+    path: '/doneList',
+    element: <DoneList />,
+    meta: {
+      name: 'DoneList',
+      icon: <FileDoneOutlined />,
+    },
+  },
+  {
     path: '/about',
     element: <About />,
     meta: {
       name: 'About',
       icon: <InfoCircleOutlined />,
-    },
-  },
-  {
-    path: '/doneList',
-    element: <div>123</div>,
-    meta: {
-      name: '已完成',
-      icon: <FileDoneOutlined />,
     },
   },
 ];

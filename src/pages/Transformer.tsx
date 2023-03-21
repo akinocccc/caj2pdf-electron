@@ -9,13 +9,8 @@ import {
 } from '@ant-design/icons';
 import { App, Button, Col, Divider, Popconfirm, Row, Space, Table } from 'antd';
 import { ipcRenderer } from 'electron';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-interface FileObject {
-  filename: string;
-  path: string;
-}
 
 const StyledRow = styled(Row)`
   margin: 10px 0;
@@ -57,8 +52,12 @@ const Transformer = (): JSX.Element => {
   const { message, modal } = App.useApp();
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [fileList, setFileList] = useState<FileObject[]>([]);
-  const [fileStatusMap, setFileStatusMap] = useState<any>({});
+  const [fileList, setFileList] = useState<FileObject[]>(
+    api.store.get('undoList', [])
+  );
+  const [fileStatusMap, setFileStatusMap] = useState<any>(
+    api.store.get('undoListStatus', {})
+  );
   const columns = [
     {
       title: '文件名称',
@@ -69,7 +68,7 @@ const Transformer = (): JSX.Element => {
       title: '状态',
       dataIndex: 'status',
       width: 100,
-      render: (_: string, { path }) => STATUS[fileStatusMap[path].status || 0],
+      render: (_: string, { path }) => STATUS[fileStatusMap[path]?.status || 0],
     },
     {
       title: '操作',
@@ -80,7 +79,7 @@ const Transformer = (): JSX.Element => {
           <Button
             size="small"
             icon={<RetweetOutlined />}
-            disabled={fileStatusMap[path].status === 1}
+            disabled={fileStatusMap[path]?.status === 1}
             onClick={() => transform([{ path, filename }])}
           ></Button>
 
@@ -94,7 +93,7 @@ const Transformer = (): JSX.Element => {
           >
             <Button
               size="small"
-              disabled={fileStatusMap[path].status === 1}
+              disabled={fileStatusMap[path]?.status === 1}
               icon={<CloseOutlined />}
             ></Button>
           </Popconfirm>
@@ -139,6 +138,7 @@ const Transformer = (): JSX.Element => {
         2: ['success', '转换成功'],
         3: ['error', '转换失败'],
       };
+      const doneTasks: any[] = [];
       res.forEach((item: any) => {
         fileStatusMap[item.path] = {
           filename: item.filename,
@@ -147,9 +147,18 @@ const Transformer = (): JSX.Element => {
         const [type, tips] = STATUS_TIPS[item.status];
         message[type](`文件【${item.filename}】${tips}`);
         if (item.status === 2) {
-          window.api.store.set('aa', 123);
+          doneTasks.push(item);
+          delete fileStatusMap[item.path];
         }
       });
+      if (doneTasks.length) {
+        const doneTaskFilePaths = doneTasks.map((item) => item.path);
+        const doneList = api.store.get('doneList', []);
+        api.store.set('doneList', doneList.concat(doneTasks));
+        setFileList(
+          fileList.filter((item) => !doneTaskFilePaths.includes(item.path))
+        );
+      }
       setFileStatusMap({ ...fileStatusMap });
     });
   };
@@ -163,10 +172,9 @@ const Transformer = (): JSX.Element => {
     fileList.forEach((item) => {
       if (filePaths.includes(item.path) === false) {
         newFileList.push(item);
+      } else {
+        delete fileStatusMap[item.path];
       }
-    });
-    filePaths.forEach((path) => {
-      delete fileStatusMap[path];
     });
     setFileList(newFileList);
   };
@@ -174,8 +182,16 @@ const Transformer = (): JSX.Element => {
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
+
+  useEffect(() => {}, []);
+
+  useEffect(() => {
+    api.store.set('undoList', fileList);
+    api.store.set('undoListStatus', fileStatusMap);
+  }, [fileList, fileStatusMap]);
+
   return (
-    <div>
+    <>
       <StyledRow justify="space-between">
         <Col>
           <Button size="middle" icon={<PlusOutlined />} onClick={selectFiles}>
@@ -233,7 +249,7 @@ const Transformer = (): JSX.Element => {
             selectedRowKeys,
             onChange: onSelectChange,
             getCheckboxProps(r) {
-              if (fileStatusMap[r.path].status === 1) {
+              if (fileStatusMap[r.path]?.status === 1) {
                 return { disabled: true };
               } else {
                 return { disabled: false };
@@ -248,7 +264,7 @@ const Transformer = (): JSX.Element => {
           }}
         />
       </StyledRow>
-    </div>
+    </>
   );
 };
 

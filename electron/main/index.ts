@@ -3,6 +3,8 @@ import { join } from 'path';
 import fs from 'fs';
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import ipc from './ipc';
+import Store from 'electron-store';
+import store from '../preload/store';
 
 process.env.DIST_ELECTRON = join(__dirname, '../');
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist-electron/renderer');
@@ -31,9 +33,7 @@ function createWindow(): void {
     },
   });
 
-  global.sharedObject = {
-    win: mainWindow,
-  };
+  Store.initRenderer();
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
@@ -88,6 +88,13 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    const listStatus: any = store.get('undoListStatus', {});
+    Object.keys(listStatus).forEach((key: string) => {
+      if (listStatus[key].status === 1) {
+        listStatus[key].status = 0;
+      }
+    });
+    store.set('undoListStatus', listStatus);
     app.quit();
   }
 });

@@ -1,9 +1,19 @@
 import SideMenu from './components/SideMenu';
-import { Layout } from 'antd';
+import { Layout, Spin } from 'antd';
 import { RouteObject, useRoutes } from 'react-router-dom';
 import routes from '@renderer/routers/index';
+import { Suspense } from 'react';
+import styled from 'styled-components';
 
 const { Content, Sider } = Layout;
+
+const CenterDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
 
 function AppLayout(): JSX.Element {
   return (
@@ -12,7 +22,15 @@ function AppLayout(): JSX.Element {
         <SideMenu />
       </Sider>
       <Content style={{ overflow: 'auto', maxHeight: '100vh' }}>
-        {useRoutes(routes as RouteObject[])}
+        <Suspense
+          fallback={
+            <CenterDiv>
+              <Spin size="large" tip="Loading..." />
+            </CenterDiv>
+          }
+        >
+          {useRoutes(routes as RouteObject[])}
+        </Suspense>
       </Content>
     </Layout>
   );

@@ -17,8 +17,22 @@ declare namespace Route {
   };
 }
 
-interface Window {
-  api: {
-    store: any;
+interface FileObject {
+  filename: string;
+  path: string;
+}
+
+interface OutputFileObject extends FileObject {
+  outputPath: string;
+}
+
+interface Api {
+  store: {
+    get: (key: string, defaultValue?: any) => any;
+    set: (key: string, val: any) => void;
+    reset: (...keys: string[]) => void;
+    clear: () => void;
   };
 }
+
+declare const api: Api;

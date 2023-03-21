@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { dialog, ipcMain } from 'electron';
+import { dialog, ipcMain, shell } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { ROOT_PATH } from './constant';
@@ -28,6 +28,7 @@ export default function ipc(): void {
         });
     });
   });
+
   ipcMain.handle('transform:start', (_, files: any[]) => {
     return new Promise<number[]>((resolve) => {
       const toolsPath = path.resolve(__dirname, `${ROOT_PATH}/tools`);
@@ -35,8 +36,9 @@ export default function ipc(): void {
       let count = 0;
       files.forEach((item) => {
         let hasError = false;
+        const outputPath = `D:\\CAJ2PDF\\${item.filename}.pdf`;
         const workerProcess = exec(
-          `caj2pdf.exe convert ${item.path} -o D:/CAJ2PDF/${item.filename}.pdf`,
+          `caj2pdf.exe convert ${item.path} -o ${outputPath}`,
           {
             cwd: toolsPath,
           }
@@ -55,7 +57,11 @@ export default function ipc(): void {
           if (hasError) {
             results.push({ ...item, status: 3 });
           } else {
-            results.push({ ...item, status: 2 });
+            results.push({
+              ...item,
+              outputPath,
+              status: 2,
+            });
           }
           count++;
           if (count === files.length) {
@@ -68,5 +74,13 @@ export default function ipc(): void {
         });
       });
     });
+  });
+
+  ipcMain.on('file:showFileInDir', (_, filePath: string) => {
+    shell.showItemInFolder(filePath);
+  });
+
+  ipcMain.on('file:openFile', (_, filePath: string) => {
+    shell.openPath(filePath);
   });
 }
